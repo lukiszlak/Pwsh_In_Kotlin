@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "powershell-in-kotlin-dsl.helloWorld",
-        "title": "Hello World"
+        "command": "powershell-in-kotlin-dsl.pwshInNewWindow",
+        "title": "Powershell in new Window"
       }
     ]
   },
