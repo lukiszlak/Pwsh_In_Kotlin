@@ -10,10 +10,18 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "powershell-in-kotlin-dsl" is now active!');
 
+	async function openInUntitled(content: string, language?: string) {
+		const document = await vscode.workspace.openTextDocument({
+			language,
+			content,
+		});
+		vscode.window.showTextDocument(document);
+	}
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('powershell-in-kotlin-dsl.pwshInNewWindow', () => {
+	let disposable = vscode.commands.registerCommand('powershell-in-kotlin-dsl.pwshInNewWindow', async () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 		const editor = vscode.window.activeTextEditor;
@@ -23,6 +31,8 @@ export function activate(context: vscode.ExtensionContext) {
 			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			highlighted = editor.document.getText(selectionRange);
 		}
+		
+		openInUntitled(highlighted, "powershell");
 		vscode.window.showInformationMessage(`You selected:\n${ highlighted }`);
 	});
 
