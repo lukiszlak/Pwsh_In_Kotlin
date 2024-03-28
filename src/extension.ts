@@ -16,7 +16,14 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('powershell-in-kotlin-dsl.pwshInNewWindow', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Your powershell script is in new window');
+		const editor = vscode.window.activeTextEditor;
+		const selection = editor.selection;
+		var highlighted = "Nothing";
+		if (selection && !selection.isEmpty) {
+			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
+			highlighted = editor.document.getText(selectionRange);
+		}
+		vscode.window.showInformationMessage(`You selected:\n${ highlighted }`);
 	});
 
 	context.subscriptions.push(disposable);
