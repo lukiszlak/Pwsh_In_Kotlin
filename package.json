@@ -3,13 +3,16 @@
   "displayName": "Powershell In Kotlin DSL",
   "description": "Let you easily edit and save Powershell scripts that are in your TeamCity Kotlin DSL scripts",
   "version": "0.0.1",
+  "publisher": "Lush Software",
   "engines": {
     "vscode": "^1.87.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [ 
+    "onLanguage:kotlin"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
