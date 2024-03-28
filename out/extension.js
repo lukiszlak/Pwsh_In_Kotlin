@@ -42,21 +42,7 @@ function activate(context) {
     }
     function escapeSpecialCharacters(text, escape = true) {
         const escapeMap = {
-            '\\': '\\\\',
-            '^': '\\^',
-            '$': '\\$',
-            '*': '\\*',
-            '+': '\\+',
-            '?': '\\?',
-            '.': '\\.',
-            '(': '\\(',
-            ')': '\\)',
-            '[': '\\[',
-            ']': '\\]',
-            '{': '\\{',
-            '}': '\\}',
-            '|': '\\|',
-            '/': '\\/',
+            '$': '\\$'
         };
         if (escape) {
             return text.replace(/[\\^$*+?.()|[\]{}\/]/g, match => escapeMap[match] || match);
@@ -73,7 +59,8 @@ function activate(context) {
     }
     function parsePowershell(content, toPowershell) {
         const kotlinToPowershell = {
-            "${'$'}": "$"
+            "${'$'}": "$",
+            "${.*?}": ""
         };
         const powershellToKotlin = {
             "$": "${'$'}"
@@ -94,7 +81,7 @@ function activate(context) {
         // Remove the last '|'
         pattern = pattern.slice(0, -1);
         const patternRegExp = new RegExp(pattern, 'g');
-        var output = content.replace(patternRegExp, match => mapping[match] || "*error*");
+        var output = content.replace(patternRegExp, match => mapping[match] || `<# --- ${match} --- #>`);
         return output;
     }
     // The command has been defined in the package.json file

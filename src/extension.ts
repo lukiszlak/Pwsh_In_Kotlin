@@ -20,21 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	function escapeSpecialCharacters(text: string, escape: boolean = true): string {
 		const escapeMap: Record<string, string> = {
-			'\\': '\\\\',
-			'^': '\\^',
-			'$': '\\$',
-			'*': '\\*',
-			'+': '\\+',
-			'?': '\\?',
-			'.': '\\.',
-			'(': '\\(',
-			')': '\\)',
-			'[': '\\[',
-			']': '\\]',
-			'{': '\\{',
-			'}': '\\}',
-			'|': '\\|',
-			'/': '\\/',
+			'$': '\\$'
 		};
 	
 		if (escape) {
@@ -52,7 +38,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	function parsePowershell(content: string, toPowershell: boolean) {
 		const kotlinToPowershell: Record<string, string> = {
-			"${'$'}": "$"
+			"${'$'}": "$",
+			"${.*?}": ""
 		}
 
 		const powershellToKotlin: Record<string, string> = {
@@ -77,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 		pattern = pattern.slice(0, -1); 
 	
 		const patternRegExp = new RegExp(pattern, 'g');
-		var output = content.replace(patternRegExp, match => mapping[match] || "*error*");
+		var output = content.replace(patternRegExp, match => mapping[match] || `<# --- ${match} --- #>`);
 		return output;
 	}
 
