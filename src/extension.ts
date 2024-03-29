@@ -36,14 +36,16 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}
 
-	function parsePowershell(content: string, toPowershell: boolean) {
+	function parseScript(content: string, toPowershell: boolean) {
 		const kotlinToPowershell: Record<string, string> = {
 			"${'$'}": "$",
 			"${.*?}": ""
 		}
 
 		const powershellToKotlin: Record<string, string> = {
-			"$": "${'$'}"
+			"$": "${'$'}",
+			"<# --- ${": "${",
+			"} --- #>": "}"
 		}
 
 		var mapping: Record <string, string>
@@ -81,10 +83,18 @@ export function activate(context: vscode.ExtensionContext) {
 			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			highlightedText = editor.document.getText(selectionRange);
 		}
-		
-		var parsedScript = parsePowershell(highlightedText, true);
-		openInUntitled(parsedScript, "powershell");
-		vscode.window.showInformationMessage(`You selected:\n${ parsedScript }`);
+
+		var parsedScript = "";
+		var fileLanguage = editor.document.languageId;
+		if (fileLanguage == "kotlin") {
+			var parsedScript = parseScript(highlightedText, true);
+			openInUntitled(parsedScript, "powershell");
+			vscode.window.showInformationMessage("Opened in Kotlin");
+		} else if (fileLanguage == "powershell") {
+			var parsedScript = parseScript(highlightedText, false);
+			openInUntitled(parsedScript, "kotlin");
+			vscode.window.showInformationMessage("Opened in Powershell");
+		}
 	});
 
 	context.subscriptions.push(disposable);

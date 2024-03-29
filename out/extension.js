@@ -57,13 +57,15 @@ function activate(context) {
             return text.replace(/\\([\\^$*+?.()|[\]{}\/])/g, (match, escapedChar) => reverseEscapeMap[match] || match);
         }
     }
-    function parsePowershell(content, toPowershell) {
+    function parseScript(content, toPowershell) {
         const kotlinToPowershell = {
             "${'$'}": "$",
             "${.*?}": ""
         };
         const powershellToKotlin = {
-            "$": "${'$'}"
+            "$": "${'$'}",
+            "<# --- ${": "${",
+            "} --- #>": "}"
         };
         var mapping;
         if (toPowershell) {
@@ -97,9 +99,18 @@ function activate(context) {
             const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
             highlightedText = editor.document.getText(selectionRange);
         }
-        var parsedScript = parsePowershell(highlightedText, true);
-        openInUntitled(parsedScript, "powershell");
-        vscode.window.showInformationMessage(`You selected:\n${parsedScript}`);
+        var parsedScript = "";
+        var fileLanguage = editor.document.languageId;
+        if (fileLanguage == "kotlin") {
+            var parsedScript = parseScript(highlightedText, true);
+            openInUntitled(parsedScript, "powershell");
+            vscode.window.showInformationMessage("Opened in Kotlin");
+        }
+        else if (fileLanguage == "powershell") {
+            var parsedScript = parseScript(highlightedText, false);
+            openInUntitled(parsedScript, "kotlin");
+            vscode.window.showInformationMessage("Opened in Powershell");
+        }
     });
     context.subscriptions.push(disposable);
 }
