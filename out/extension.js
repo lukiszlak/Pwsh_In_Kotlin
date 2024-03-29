@@ -33,7 +33,7 @@ function activate(context) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "powershell-in-kotlin-dsl" is now active!');
-    async function openInUntitled(content, language) {
+    async function openNewWindow(content, language) {
         const document = await vscode.workspace.openTextDocument({
             language,
             content,
@@ -103,12 +103,12 @@ function activate(context) {
         var fileLanguage = editor.document.languageId;
         if (fileLanguage == "kotlin") {
             var parsedScript = parseScript(highlightedText, true);
-            openInUntitled(parsedScript, "powershell");
+            openNewWindow(parsedScript, "powershell");
             vscode.window.showInformationMessage("Opened in Kotlin");
         }
         else if (fileLanguage == "powershell") {
             var parsedScript = parseScript(highlightedText, false);
-            openInUntitled(parsedScript, "kotlin");
+            openNewWindow(parsedScript, "kotlin");
             vscode.window.showInformationMessage("Opened in Powershell");
         }
     });
