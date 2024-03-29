@@ -18,6 +18,11 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showTextDocument(document);
 	}
 
+	async function openOldWindow(uri: vscode.Uri) {
+		const document = await vscode.workspace.openTextDocument(uri);
+		vscode.window.showTextDocument(document);
+	}
+
 	function escapeSpecialCharacters(text: string, escape: boolean = true): string {
 		const escapeMap: Record<string, string> = {
 			'$': '\\$'
@@ -70,6 +75,12 @@ export function activate(context: vscode.ExtensionContext) {
 		return output;
 	}
 
+	function getReturnInfo(content: String) {
+
+		var match = content.match(/(<@(.*?)@> <#(.*?)#>)/);
+		return match;
+	}
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
@@ -78,21 +89,32 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 		const editor = vscode.window.activeTextEditor;
 		const selection = editor.selection;
+		const currentFileName = editor.document.fileName;
 		var highlightedText = "Nothing";
+		var fileLanguage = editor.document.languageId;
+		var selectionRange;
+
 		if (selection && !selection.isEmpty) {
-			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
+			selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			highlightedText = editor.document.getText(selectionRange);
+		}
+		
+		if (fileLanguage == "kotlin") {
+			highlightedText += `\n\n\n### DO NOT DELETE <@${currentFileName}@> <#${selectionRange}#> DO NOT DELETE ###`;
 		}
 
 		var parsedScript = "";
-		var fileLanguage = editor.document.languageId;
 		if (fileLanguage == "kotlin") {
 			var parsedScript = parseScript(highlightedText, true);
 			openNewWindow(parsedScript, "powershell");
 			vscode.window.showInformationMessage("Opened in Kotlin");
 		} else if (fileLanguage == "powershell") {
 			var parsedScript = parseScript(highlightedText, false);
-			openNewWindow(parsedScript, "kotlin");
+			var returnInfo = getReturnInfo(parsedScript);
+			var filePath = vscode.Uri.parse(`file:///${returnInfo[2]}`);
+			var originalSelection = returnInfo[3];
+
+			openOldWindow(filePath);
 			vscode.window.showInformationMessage("Opened in Powershell");
 		}
 	});
