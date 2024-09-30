@@ -110,6 +110,11 @@ export function activate(context: vscode.ExtensionContext) {
 		} else if (fileLanguage == "powershell") {
 			var parsedScript = parseScript(highlightedText, false);
 			var returnInfo = getReturnInfo(parsedScript);
+
+			if(returnInfo == null) {
+				throw "Return Info is empty"
+			} 
+
 			var filePath = vscode.Uri.parse(`file:///${returnInfo[2]}`);
 			var originalSelection = new vscode.Range(parseInt(returnInfo[3]), parseInt(returnInfo[4]), parseInt(returnInfo[5]), parseInt(returnInfo[6]));
 
