@@ -115,7 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
 				throw "Return Info is empty"
 			} 
 
-			var filePath = vscode.Uri.parse(`file:///${returnInfo[2]}`);
+			var filePath = vscode.Uri.parse(`file://${returnInfo[2]}`);
 			var originalSelection = new vscode.Range(parseInt(returnInfo[3]), parseInt(returnInfo[4]), parseInt(returnInfo[5]), parseInt(returnInfo[6]));
 
 			openOldWindow(filePath);
