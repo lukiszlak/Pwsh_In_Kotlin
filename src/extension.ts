@@ -72,12 +72,26 @@ export function activate(context: vscode.ExtensionContext) {
 	
 		const patternRegExp = new RegExp(pattern, 'g');
 		var output = content.replace(patternRegExp, match => mapping[match] || `<# --- ${match} --- #>`);
-		return output;
+
+		if(!toPowershell) {
+			return removeReturnInfo(output);
+		} else {
+			return output;
+		}
 	}
 
 	function getReturnInfo(content: String) {
 		var match = content.match(/(<@(.*?)@> <#sl(.*?);sc(.*?);el(.*?);ec(.*?)#>)/);
 		return match;
+	}
+
+	function removeReturnInfo(content: String) {
+		var match = content.match(/### DO NOT DELETE .* DO NOT DELETE ###/);
+		var substring = ""
+		if(match != null) {
+			var substring = match[0];
+		}
+		return content.replace(substring, "").trimEnd();
 	}
 
 	// The command has been defined in the package.json file
@@ -109,7 +123,7 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage("Opened in Kotlin");
 		} else if (fileLanguage == "powershell") {
 			var parsedScript = parseScript(highlightedText, false);
-			var returnInfo = getReturnInfo(parsedScript);
+			var returnInfo = getReturnInfo(highlightedText);
 
 			if(returnInfo == null) {
 				throw "Return Info is empty"
