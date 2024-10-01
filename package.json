@@ -1,7 +1,6 @@
 {
   "name": "powershell-in-kotlin-dsl",
   "displayName": "Powershell In Kotlin DSL",
-  "type": "module",
   "description": "Let you easily edit and save Powershell scripts that are in your TeamCity Kotlin DSL scripts",
   "version": "0.0.1",
   "publisher": "Lush Software",
@@ -14,7 +13,7 @@
   "activationEvents": [
     "onLanguage:kotlin"
   ],
-  "main": "./src/extension.ts",
+  "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
