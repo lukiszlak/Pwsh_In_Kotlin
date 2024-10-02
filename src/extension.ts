@@ -24,8 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
 		if (currentEditor == null) {
 			throw new Error("Cannot find current Editor");
 		} else if (currentEditor.document.isUntitled) {
-			var deleteRange = currentEditor.selection;
-			await currentEditor?.edit(editBuilder => editBuilder.delete(deleteRange));
+			var deleteSelection = currentEditor.selection;
+			await currentEditor?.edit(editBuilder => editBuilder.delete(deleteSelection));
 			await vscode.commands.executeCommand("workbench.action.closeActiveEditor",);
 		}
 
