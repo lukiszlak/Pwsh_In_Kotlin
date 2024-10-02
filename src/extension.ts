@@ -1,14 +1,7 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "powershell-in-kotlin-dsl" is now active!');
+	console.log('"powershell-in-kotlin-dsl is active!');
 
 	async function openNewWindow(content: string, language?: string) {
 		const document = await vscode.workspace.openTextDocument({
@@ -55,19 +48,19 @@ export function activate(context: vscode.ExtensionContext) {
 		const kotlinToPowershell: Record<string, string> = {
 			"${'$'}": "$",
 			"${.*?}": ""
-		}
+		};
 
 		const powershellToKotlin: Record<string, string> = {
 			"$": "${'$'}",
 			"<# --- ${": "${",
 			"} --- #>": "}"
-		}
+		};
 
-		var mapping: Record <string, string>
+		var mapping: Record <string, string>;
 		if (toPowershell) {
-			mapping = kotlinToPowershell
+			mapping = kotlinToPowershell;
 		} else {
-			mapping = powershellToKotlin
+			mapping = powershellToKotlin;
 		}
 
 		let pattern = '';
@@ -77,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
 			const key = escapeSpecialCharacters(keys[i]);
 			pattern += key + '|';
 		}
-		// Remove the last '|'
+		// Remove the last pipe
 		pattern = pattern.slice(0, -1); 
 	
 		const patternRegExp = new RegExp(pattern, 'g');
@@ -97,19 +90,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 	function removeReturnInfo(content: String) {
 		var match = content.match(/### DO NOT DELETE .* DO NOT DELETE ###/);
-		var substring = ""
-		if(match != null) {
+		var substring = "";
+		if(match !== null) {
 			var substring = match[0];
 		}
 		return content.replace(substring, "").trimEnd();
 	}
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('powershell-in-kotlin-dsl.pwshInNewWindow', async () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
 		const editor = vscode.window.activeTextEditor;
 		const selection = editor?.selection;
 		const currentFileName = editor?.document.fileName;
@@ -119,22 +107,22 @@ export function activate(context: vscode.ExtensionContext) {
 		if (selection && !selection.isEmpty) {
 			highlightedText = editor?.document.getText(selection);
 
-			if (fileLanguage == "kotlin") {
-				highlightedText += `\n\n\n### DO NOT DELETE <@${currentFileName}@> <#sl${selection?.c.c};sc${selection?.c.e};el${selection?.e.c};ec${selection?.e.e}#> DO NOT DELETE ###`;
+			if (fileLanguage === "kotlin") {
+				highlightedText += `\n\n\n### DO NOT DELETE <@${currentFileName}@> <#sl${selection.c.c};sc${selection.c.e};el${selection.e.c};ec${selection.e.e}#> DO NOT DELETE ###`;
 			}
 		}
 
 		var parsedScript = "";
-		if (fileLanguage == "kotlin") {
+		if (fileLanguage === "kotlin") {
 			var parsedScript = parseScript(highlightedText, true);
 			openNewWindow(parsedScript, "powershell");
 			vscode.window.showInformationMessage("Opened in Kotlin");
-		} else if (fileLanguage == "powershell") {
+		} else if (fileLanguage === "powershell") {
 			var parsedScript = parseScript(highlightedText, false);
 			var returnInfo = getReturnInfo(highlightedText);
 
-			if(returnInfo == null) {
-				throw "Return Info is empty"
+			if(returnInfo === null) {
+				throw new Error("Return Info is empty");
 			} 
 
 			var filePath = vscode.Uri.parse(`file://${returnInfo[2]}`);
