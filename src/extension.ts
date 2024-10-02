@@ -115,15 +115,13 @@ export function activate(context: vscode.ExtensionContext) {
 		const currentFileName = editor?.document.fileName;
 		var highlightedText = "Nothing";
 		var fileLanguage = editor?.document.languageId;
-		var selectionRange;
 
 		if (selection && !selection.isEmpty) {
-			selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
-			highlightedText = editor?.document.getText(selectionRange);
-		}
-		
-		if (fileLanguage == "kotlin") {
-			highlightedText += `\n\n\n### DO NOT DELETE <@${currentFileName}@> <#sl${selectionRange?.c.c};sc${selectionRange?.c.e};el${selectionRange?.e.c};ec${selectionRange?.e.e}#> DO NOT DELETE ###`;
+			highlightedText = editor?.document.getText(selection);
+
+			if (fileLanguage == "kotlin") {
+				highlightedText += `\n\n\n### DO NOT DELETE <@${currentFileName}@> <#sl${selection?.c.c};sc${selection?.c.e};el${selection?.e.c};ec${selection?.e.e}#> DO NOT DELETE ###`;
+			}
 		}
 
 		var parsedScript = "";
