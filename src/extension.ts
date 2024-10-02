@@ -19,8 +19,17 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	async function openOldWindow(uri: vscode.Uri) {
-		const document = await vscode.workspace.openTextDocument(uri);
-		vscode.window.showTextDocument(document);
+		var currentEditor = vscode.window.activeTextEditor;
+
+		if (currentEditor == null) {
+			throw new Error("Cannot find current Editor");
+		} else {
+			var deleteRange = currentEditor.selection;
+			await currentEditor?.edit(editBuilder => editBuilder.delete(deleteRange));
+			await vscode.commands.executeCommand("workbench.action.closeActiveEditor",);
+			const document = await vscode.workspace.openTextDocument(uri);
+			vscode.window.showTextDocument(document);
+		}
 	}
 
 	function escapeSpecialCharacters(text: string, escape: boolean = true): string {
