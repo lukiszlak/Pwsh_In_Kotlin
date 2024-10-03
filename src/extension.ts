@@ -11,7 +11,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showTextDocument(document);
 	}
 
-	async function openOldWindow(uri: vscode.Uri) {
+	async function openOldWindow(uri: string) {
 		var currentEditor = vscode.window.activeTextEditor;
 
 		if (currentEditor == null) {
@@ -99,7 +99,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let disposable = vscode.commands.registerCommand('powershell-in-kotlin-dsl.pwshInNewWindow', async () => {
 		const editor = vscode.window.activeTextEditor;
-		const selection = editor?.selection;
+
+		if (editor == null) {
+			throw new Error("Cannot get editor");
+		}
+
+		var selection = editor.selection;
 		const currentFileName = editor?.document.fileName;
 		var highlightedText = "Nothing";
 		var fileLanguage = editor?.document.languageId;
@@ -108,7 +113,7 @@ export function activate(context: vscode.ExtensionContext) {
 			highlightedText = editor?.document.getText(selection);
 
 			if (fileLanguage === "kotlin") {
-				highlightedText += `\n\n\n### DO NOT DELETE <@${currentFileName}@> <#sl${selection.c.c};sc${selection.c.e};el${selection.e.c};ec${selection.e.e}#> DO NOT DELETE ###`;
+				highlightedText += `\n\n\n### DO NOT DELETE <@${currentFileName}@> <#sl${selection.start.line};sc${selection.start.character};el${selection.end.line};ec${selection.end.character}#> DO NOT DELETE ###`;
 			}
 		}
 
@@ -125,7 +130,7 @@ export function activate(context: vscode.ExtensionContext) {
 				throw new Error("Return Info is empty");
 			} 
 
-			var filePath = vscode.Uri.parse(`file://${returnInfo[2]}`);
+			var filePath = returnInfo[2]
 			var originalSelection = new vscode.Range(parseInt(returnInfo[3]), parseInt(returnInfo[4]), parseInt(returnInfo[5]), parseInt(returnInfo[6]));
 
 			await openOldWindow(filePath);
