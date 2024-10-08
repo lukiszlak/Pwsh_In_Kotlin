@@ -135,7 +135,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 			await openOldWindow(filePath);
 			await new Promise(resolve => setTimeout(resolve, 50)); // TODO Fix issue with active editor not being updated 
-			vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(parsedScript), originalSelection);
+			var snippet = new vscode.SnippetString(parsedScript);
+			vscode.window.activeTextEditor?.insertSnippet(snippet, originalSelection);
 			vscode.window.showInformationMessage("Opened in Powershell");
 		}
 	});
