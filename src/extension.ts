@@ -77,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
 		var output = content.replace(patternRegExp, match => mapping[match] || `<# --- ${match} --- #>`);
 
 		if(!toPowershell) {
-			return removeReturnInfo(output);
+			return removeReturnInfo(output.replaceAll("\\$","\\\\$"));
 		} else {
 			return output;
 		}
