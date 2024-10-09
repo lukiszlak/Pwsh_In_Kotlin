@@ -111,10 +111,44 @@ export function activate(context: vscode.ExtensionContext) {
 
 		if (selection && !selection.isEmpty) {
 			highlightedText = editor?.document.getText(selection);
+		} else if (fileLanguage === "kotlin" && selection.isEmpty) {
+			var cursorIndex = editor.document.offsetAt(selection.active);
+			var fullScript = editor.document.getText();
 
-			if (fileLanguage === "kotlin") {
-				highlightedText += `\n\n\n### DO NOT DELETE <@${currentFileName}@> <#sl${selection.start.line};sc${selection.start.character};el${selection.end.line};ec${selection.end.character}#> DO NOT DELETE ###`;
+			var quoteIndexes = [...fullScript.toString().matchAll(new RegExp('"""', 'gi'))].map(charactersPosition => charactersPosition.index)
+
+			var startIndex;
+			var endIndex;
+			for (const index of quoteIndexes) {
+				if(index < cursorIndex) {
+					startIndex = index + 3; // Need to offset triple quotes
+				} else if(index > cursorIndex) {
+					endIndex = index - 1;
+					break;
+				}
 			}
+
+			if(startIndex == null || endIndex == null) {
+				throw new Error("Cannot find start or end index")
+			}
+			console.log("StartIndex is: " + startIndex)
+			console.log("EndIndex is: " + endIndex)
+			console.log("Finished Finding Start and End indexes")
+
+			var startPosition = editor.document.positionAt(startIndex);
+			var endPosition = editor.document.positionAt(endIndex);
+
+			selection = new vscode.Selection(startPosition, endPosition)
+			highlightedText = editor.document.getText(selection);
+		}
+
+		if(highlightedText == "Nothing") {
+			throw new Error("Couldn't find any selection aborting")
+		}
+
+
+		if (fileLanguage === "kotlin") {
+			highlightedText += `\n\n\n### DO NOT DELETE <@${currentFileName}@> <#sl${selection.start.line};sc${selection.start.character};el${selection.end.line};ec${selection.end.character}#> DO NOT DELETE ###`;
 		}
 
 		var parsedScript = "";
