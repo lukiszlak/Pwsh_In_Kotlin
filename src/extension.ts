@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		const document = await vscode.workspace.openTextDocument(uri);
-		vscode.window.showTextDocument(document);
+		await vscode.window.showTextDocument(document);
 	}
 
 	function escapeSpecialCharacters(text: string, escape: boolean = true): string {
@@ -134,7 +134,6 @@ export function activate(context: vscode.ExtensionContext) {
 			var originalSelection = new vscode.Range(parseInt(returnInfo[3]), parseInt(returnInfo[4]), parseInt(returnInfo[5]), parseInt(returnInfo[6]));
 
 			await openOldWindow(filePath);
-			await new Promise(resolve => setTimeout(resolve, 50)); // TODO Fix issue with active editor not being updated 
 			var snippet = new vscode.SnippetString(parsedScript);
 			vscode.window.activeTextEditor?.insertSnippet(snippet, originalSelection);
 			vscode.window.showInformationMessage("Opened in Powershell");
