@@ -115,7 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
 			var cursorIndex = editor.document.offsetAt(selection.active);
 			var fullScript = editor.document.getText();
 
-			var quoteIndexes = [...fullScript.toString().matchAll(new RegExp('"""', 'gi'))].map(charactersPosition => charactersPosition.index)
+			var quoteIndexes = [...fullScript.toString().matchAll(new RegExp('"""', 'gi'))].map(charactersPosition => charactersPosition.index);
 
 			var startIndex;
 			var endIndex;
@@ -129,21 +129,21 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 			if(startIndex == null || endIndex == null) {
-				throw new Error("Cannot find start or end index")
+				throw new Error("Cannot find start or end index");
 			}
-			console.log("StartIndex is: " + startIndex)
-			console.log("EndIndex is: " + endIndex)
-			console.log("Finished Finding Start and End indexes")
+			console.log("StartIndex is: " + startIndex);
+			console.log("EndIndex is: " + endIndex);
+			console.log("Finished Finding Start and End indexes");
 
 			var startPosition = editor.document.positionAt(startIndex);
 			var endPosition = editor.document.positionAt(endIndex);
 
-			selection = new vscode.Selection(startPosition, endPosition)
+			selection = new vscode.Selection(startPosition, endPosition);
 			highlightedText = editor.document.getText(selection);
 		}
 
-		if(highlightedText == "Nothing") {
-			throw new Error("Couldn't find any selection aborting")
+		if(highlightedText === "Nothing") {
+			throw new Error("Couldn't find any selection aborting");
 		}
 
 
@@ -164,7 +164,7 @@ export function activate(context: vscode.ExtensionContext) {
 				throw new Error("Return Info is empty");
 			} 
 
-			var filePath = returnInfo[2]
+			var filePath = returnInfo[2];
 			var originalSelection = new vscode.Range(parseInt(returnInfo[3]), parseInt(returnInfo[4]), parseInt(returnInfo[5]), parseInt(returnInfo[6]));
 
 			await openOldWindow(filePath);
