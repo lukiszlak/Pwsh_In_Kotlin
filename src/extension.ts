@@ -119,11 +119,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 			var startIndex;
 			var endIndex;
-			for (const index of quoteIndexes) {
-				if(index < cursorIndex) {
-					startIndex = index + 3; // Need to offset triple quotes
-				} else if(index > cursorIndex) {
-					endIndex = index - 1;
+			for (let i = 0; i < quoteIndexes.length; i + 2) {
+				if(quoteIndexes[i] < cursorIndex && quoteIndexes[i + 1] > cursorIndex) {
+					startIndex = quoteIndexes[i] + 3; // Need to offset triple quotes
+					endIndex = quoteIndexes[i + 1] - 1;
 					break;
 				}
 			}
