@@ -128,7 +128,8 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 			if(startIndex == null || endIndex == null) {
-				throw new Error("Cannot find start or end index");
+				vscode.window.showErrorMessage("Script is not between triple quotes");
+				throw new Error("Script is not between triple quotes");
 			}
 			console.log("StartIndex is: " + startIndex);
 			console.log("EndIndex is: " + endIndex);
