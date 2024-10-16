@@ -119,7 +119,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			var startIndex;
 			var endIndex;
-			for (let i = 0; i < quoteIndexes.length; i + 2) {
+			for (let i = 0; i < quoteIndexes.length; i = i + 2) {
 				if(quoteIndexes[i] < cursorIndex && quoteIndexes[i + 1] > cursorIndex) {
 					startIndex = quoteIndexes[i] + 3; // Need to offset triple quotes
 					endIndex = quoteIndexes[i + 1] - 1;
@@ -128,7 +128,6 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 			if(startIndex == null || endIndex == null) {
-				vscode.window.showErrorMessage("Script is not between triple quotes");
 				throw new Error("Script is not between triple quotes");
 			}
 			console.log("StartIndex is: " + startIndex);
