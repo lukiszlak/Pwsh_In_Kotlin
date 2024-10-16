@@ -89,12 +89,12 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	function removeReturnInfo(content: String) {
-		var match = content.match(/### DO NOT DELETE .* DO NOT DELETE ###/);
+		var match = content.match(/(\r\n|\r|\n){3}### DO NOT DELETE .* DO NOT DELETE ###/);
 		var substring = "";
 		if(match !== null) {
 			var substring = match[0];
 		}
-		return content.replace(substring, "").trimEnd();
+		return content.replace(substring, "");
 	}
 
 	let disposable = vscode.commands.registerCommand('powershell-in-kotlin-dsl.pwshInNewWindow', async () => {
