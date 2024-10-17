@@ -110,9 +110,11 @@ export function activate(context: vscode.ExtensionContext) {
 		var highlightedText = "Nothing";
 		var fileLanguage = editor?.document.languageId;
 
-		if (selection && !selection.isEmpty) {
-			highlightedText = editor?.document.getText(selection);
-		} else if (fileLanguage === "kotlin" && selection.isEmpty) {
+		if(fileLanguage == "powershell") {
+			// We want the whole powershell file no matter the selection 
+			highlightedText = editor.document.getText();
+		} else if (fileLanguage === "kotlin") {
+			if(selection.isEmpty) {
 			var cursorIndex = editor.document.offsetAt(selection.active);
 			var fullScript = editor.document.getText();
 
@@ -139,7 +141,8 @@ export function activate(context: vscode.ExtensionContext) {
 			var endPosition = editor.document.positionAt(endIndex);
 
 			selection = new vscode.Selection(startPosition, endPosition);
-			highlightedText = editor.document.getText(selection);
+			}
+			highlightedText = editor?.document.getText(selection);
 		}
 
 		if(highlightedText === "Nothing") {
