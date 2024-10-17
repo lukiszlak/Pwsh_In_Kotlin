@@ -115,38 +115,39 @@ export function activate(context: vscode.ExtensionContext) {
 			highlightedText = editor.document.getText();
 		} else if (fileLanguage === "kotlin") {
 			if(selection.isEmpty) {
-			var cursorIndex = editor.document.offsetAt(selection.active);
-			var fullScript = editor.document.getText();
+				var cursorIndex = editor.document.offsetAt(selection.active);
+				var fullScript = editor.document.getText();
 
-			var quoteIndexes = [...fullScript.toString().matchAll(new RegExp('"""', 'gi'))].map(charactersPosition => charactersPosition.index);
+				var quoteIndexes = [...fullScript.toString().matchAll(new RegExp('"""', 'gi'))].map(charactersPosition => charactersPosition.index);
 
-			var startIndex;
-			var endIndex;
-			for (let i = 0; i < quoteIndexes.length; i = i + 2) {
-				if(quoteIndexes[i] < cursorIndex && quoteIndexes[i + 1] > cursorIndex) {
-					startIndex = quoteIndexes[i] + 3; // Need to offset triple quotes
-					endIndex = quoteIndexes[i + 1] - 1;
-					break;
+				var startIndex;
+				var endIndex;
+				for (let i = 0; i < quoteIndexes.length; i = i + 2) {
+					if(quoteIndexes[i] < cursorIndex && quoteIndexes[i + 1] > cursorIndex) {
+						startIndex = quoteIndexes[i] + 3; // Need to offset triple quotes
+						endIndex = quoteIndexes[i + 1] - 1;
+						break;
+					}
 				}
-			}
 
-			if(startIndex == null || endIndex == null) {
-				throw new Error("Script is not between triple quotes");
-			}
-			console.log("StartIndex is: " + startIndex);
-			console.log("EndIndex is: " + endIndex);
-			console.log("Finished Finding Start and End indexes");
+				if(startIndex == null || endIndex == null) {
+					vscode.window.showWarningMessage("Script is not between triple quotes");
+					return;
+				}
+				console.log("StartIndex is: " + startIndex);
+				console.log("EndIndex is: " + endIndex);
+				console.log("Finished Finding Start and End indexes");
 
-			var startPosition = editor.document.positionAt(startIndex);
-			var endPosition = editor.document.positionAt(endIndex);
+				var startPosition = editor.document.positionAt(startIndex);
+				var endPosition = editor.document.positionAt(endIndex);
 
-			selection = new vscode.Selection(startPosition, endPosition);
+				selection = new vscode.Selection(startPosition, endPosition);	
 			}
 			highlightedText = editor?.document.getText(selection);
 		}
 
 		if(highlightedText === "Nothing") {
-			throw new Error("Couldn't find any selection aborting");
+			vscode.window.showWarningMessage("Couldn't find any selection aborting");
 		}
 
 
