@@ -1,0 +1,11 @@
+jobs:
+  build_addon:
+    name: Build the addon and save the artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Build The addon
+      run: |
+      npm install
+      npm install -g @vscode/vsce
+      vsce package
