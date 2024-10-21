@@ -17,3 +17,9 @@ jobs:
       - name: Build Extension
         run: |
           vsce package
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: Built Extension
+          path: /home/runner/work/Pwsh_In_Kotlin/Pwsh_In_Kotlin/powershell-in-kotlin-dsl-0.0.1.vsix
