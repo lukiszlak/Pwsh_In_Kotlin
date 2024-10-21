@@ -1,11 +1,19 @@
+name: Build Extension
+on: [push]
 jobs:
-  build_addon:
-    name: Build the addon and save the artifacts
+  build_extension:
+    name: Build the extension and save the artifacts
     runs-on: ubuntu-latest
 
     steps:
-    - name: Build The addon
-      run: |
-      npm install
-      npm install -g @vscode/vsce
-      vsce package
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Get the requirements 
+        run: |
+          npm install
+          npm install -g @vscode/vsce
+
+      - name: Build Extension
+        run: |
+          vsce package
