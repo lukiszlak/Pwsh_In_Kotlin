@@ -48,13 +48,15 @@ export function activate(context: vscode.ExtensionContext) {
 	function parseScript(content: string, toPowershell: boolean) {
 		const kotlinToPowershell: Record<string, string> = {
 			"${'$'}": "$",
-			"${.*?}": ""
+			"${.*?}": "",
+			"\$(?!{|')": "<# --- $ --- #>"
 		};
 
 		const powershellToKotlin: Record<string, string> = {
-			"$": "${'$'}",
+			"\$(?!\w)": "${'$'}",
 			"<# --- ${": "${",
-			"} --- #>": "}"
+			"} --- #>": "}",
+			"<# --- $ --- #>": "$"
 		};
 
 		var mapping: Record <string, string>;
