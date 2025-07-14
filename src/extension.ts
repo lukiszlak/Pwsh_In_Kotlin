@@ -159,7 +159,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (fileLanguage === "kotlin") {
 			var parsedScript = parseScript(highlightedText, true);
 			openNewWindow(parsedScript, "powershell");
-			vscode.window.showInformationMessage("Opened in Kotlin");
+			vscode.window.showInformationMessage("Opened in Powershell");
 		} else if (fileLanguage === "powershell") {
 			var parsedScript = parseScript(highlightedText, false);
 			var returnInfo = getReturnInfo(highlightedText);
@@ -174,7 +174,7 @@ export function activate(context: vscode.ExtensionContext) {
 			await openOldWindow(filePath);
 			var snippet = new vscode.SnippetString(parsedScript);
 			vscode.window.activeTextEditor?.insertSnippet(snippet, originalSelection);
-			vscode.window.showInformationMessage("Opened in Powershell");
+			vscode.window.showInformationMessage("Opened in Kotlin");
 		}
 	});
 
